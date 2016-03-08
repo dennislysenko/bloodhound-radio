@@ -123,23 +123,33 @@ var Main = React.createClass({
             </div>
         });
 
-        let loading;
+        let loadingOverlay;
         if (this.state.serverRequests.length > 0) {
-            loading = <div id="overlay"><h1>Loading</h1></div>;
+            loadingOverlay = <div id="overlay"><h1>Loading</h1></div>;
+        }
+
+        let scentsSection;
+        if (scents.length > 0) {
+            scentsSection = <div>
+                <h3>Scents you've already created:</h3>
+                <div className="card-deck">
+                    {scents}
+                </div>
+                <br />
+            </div>
         }
 
         return (
             <div>
                 <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume}
                         isPlaying={!this.state.paused}/>
-                <div className="card-deck">
-                    {scents}
-                </div>
+
+                {scentsSection}
 
                 <h3>Create some new scents from your likes:</h3>
                 <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>
 
-                {loading}
+                {loadingOverlay}
             </div>
         )
     }

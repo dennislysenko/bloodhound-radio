@@ -6,13 +6,14 @@ body,html {
   background-color: #ffeedd;
   font-family: sans-serif;
   font-size: 14px;
-  margin: 0 0 100px;
+  margin: 0 0 30px;
 }
 
 .card-deck {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  justify-content: center;
 }
 
 .card {
@@ -92,4 +93,8 @@ header {
     vertical-align: middle;
     display: inline-block;
   }
+}
+
+h3 {
+  text-align: center;
 }

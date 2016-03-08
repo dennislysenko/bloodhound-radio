@@ -2,7 +2,7 @@
     <header><%= image_tag 'scr.png', width: 64, height: 32 %> <span>Bloodhound Radio</span></header>
     <%= react_component('Main', soundcloud_client_id: ENV['SOUNDCLOUD_CLIENT_ID']) %>
 
-    <%= link_to 'Logout', '/users/deauthenticate' %>
+    <%# link_to 'Logout', '/users/deauthenticate' %>
 <% else %>
     <%= link_to 'Login with Soundcloud', '/auth/soundcloud' %> to get started
 <% end %>
