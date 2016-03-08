@@ -131,7 +131,7 @@ var Main = React.createClass({
         let scentsSection;
         if (scents.length > 0) {
             scentsSection = <div>
-                <h3>Scents you've already created:</h3>
+                <h3>Scents you're following:</h3>
                 <div className="card-deck">
                     {scents}
                 </div>
@@ -146,7 +146,7 @@ var Main = React.createClass({
 
                 {scentsSection}
 
-                <h3>Create some new scents from your likes:</h3>
+                <h3>Give us a scent to track down from your likes:</h3>
                 <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>
 
                 {loadingOverlay}
