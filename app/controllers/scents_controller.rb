@@ -3,7 +3,7 @@ class ScentsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    scents = current_user.scents.map { |scent| ScentSerializer.new(scent, root: false, only: [:name, :id]).as_json }
+    scents = current_user.scents.map { |scent| ScentSerializer.new(scent, root: false, only: [:name, :id, :source_track]).as_json }
     render json: { scents: scents }
   end
 
@@ -29,7 +29,7 @@ class ScentsController < ApplicationController
         user: current_user
     )
 
-    render json: ScentSerializer.new(scent, only: [:name, :id]).as_json
+    render json: ScentSerializer.new(scent, only: [:name, :id, :source_track]).as_json
   end
 
   def show
