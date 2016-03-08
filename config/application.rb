@@ -25,6 +25,7 @@ module RiffRadio
 
     # Begin things I added
     config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('serializers')
 
     config.cache_store = :readthis_store, {
         expires_in: 2.weeks.to_i,

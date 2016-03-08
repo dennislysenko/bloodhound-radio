@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308012215) do
+ActiveRecord::Schema.define(version: 20160308040329) do
 
   create_table "scents", force: :cascade do |t|
     t.string   "source_track_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20160308012215) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.integer  "user_id"
+    t.string   "name"
   end
 
   add_index "scents", ["user_id"], name: "index_scents_on_user_id"

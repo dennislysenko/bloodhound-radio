@@ -11,4 +11,6 @@ Rails.application.routes.draw do
     get 'authenticate', on: :collection
     get 'deauthenticate', on: :collection
   end
+
+  resources :scents
 end

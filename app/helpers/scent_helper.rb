@@ -1,0 +1,2 @@
+module ScentHelper
+end

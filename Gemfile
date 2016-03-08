@@ -62,3 +62,5 @@ gem 'readthis'
 gem 'hiredis'
 
 gem 'soundcloud'
+
+gem 'active_model_serializers'

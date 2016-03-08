@@ -3,27 +3,25 @@ class Scent < ActiveRecord::Base
   serialize :track_ids, Array
 
   def source_track
-    Rails.cache.fetch(redis_key(source_track_id)) do
-      EasySoundcloud.client_for(user).get("/tracks/#{source_track_id}")
-    end
+    EasySoundcloud.fetch_single_track(source_track_id, user)
   end
 
   def tracks
-    tracks = Hash.zip[track_ids.map { |id| [id, $redis.get(redis_key(id))] }]
+    tracks = Hash[track_ids.map { |id| [id, $redis.get(cache_key(id))] }]
 
     # load tracks that aren't cached from the SC API
     unloaded_ids = tracks.select { |id, track_info| track_info.nil? }.map { |id, track_info| id }
     unloaded_tracks = EasySoundcloud.client_for(user).get("/tracks?ids=#{unloaded_ids.join(',')}")
     unloaded_tracks.each do |track|
       tracks[track['id']] = track
-      $redis.set(redis_key(track['id']), track)
+      Rails.cache.write(cache_key(track['id']), track)
     end
 
-    tracks
+    tracks.map { |id, track| track }
   end
 
   private
-  def redis_key(track_id)
-    "sc:track:#{track_id}"
+  def cache_key(track_id)
+    EasySoundcloud.cache_key(track_id)
   end
 end

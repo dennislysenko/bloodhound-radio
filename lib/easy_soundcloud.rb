@@ -6,4 +6,14 @@ class EasySoundcloud
                                 :access_token => user.soundcloud_token
                             })
   end
+
+  def self.fetch_single_track(track_id, user)
+    Rails.cache.fetch(cache_key(track_id)) do
+      EasySoundcloud.client_for(user).get("/tracks/#{track_id}").as_json
+    end
+  end
+
+  def self.cache_key(track_id)
+    "sc:track:#{track_id}"
+  end
 end
