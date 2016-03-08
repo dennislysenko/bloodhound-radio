@@ -1,1 +1,8 @@
-<%= react_component('Silly', thing: 'you') %>
+User id: <%= @user_id %><br/>
+
+<% if @logged_in %>
+    <%= react_component('Silly', thing: @current_user.full_name) %>
+    <%= link_to 'Logout', '/users/deauthenticate' %>
+<% else %>
+    <%= link_to 'Login with Soundcloud', '/auth/soundcloud' %>
+<% end %>

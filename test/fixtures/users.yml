@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  soundcloud_id: MyString
+  name: MyString
+  avatar_url: MyString
+  soundcloud_url: MyString
+  country: MyString
+  city: MyString
+
+two:
+  soundcloud_id: MyString
+  name: MyString
+  avatar_url: MyString
+  soundcloud_url: MyString
+  country: MyString
+  city: MyString
