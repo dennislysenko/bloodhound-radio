@@ -5,10 +5,12 @@ class WelcomeController < ApplicationController
     @user_id = session[:user_id]
 
     if logged_in?
-      @tracks = Rails.cache.fetch("sc/user/likes/#{current_user.id}", expires_in: 1.day) do
-        client = EasySoundcloud.client_for(current_user)
-        client.get('/me/favorites').as_json
-      end
+      # @tracks = Rails.cache.fetch("sc/user/likes/#{current_user.id}", expires_in: 1.day) do
+      #   client = EasySoundcloud.client_for(current_user)
+      #   client.get('/me/favorites').as_json
+      # end
+      #
+      # @scents = Scent.where(user: current_user).map { |scent| ScentSerializer.new(scent).as_json }
     end
   end
 end

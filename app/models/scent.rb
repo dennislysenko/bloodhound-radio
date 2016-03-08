@@ -7,17 +7,17 @@ class Scent < ActiveRecord::Base
   end
 
   def tracks
-    tracks = Hash[track_ids.map { |id| [id, $redis.get(cache_key(id))] }]
+    tracks = Hash[track_ids.map { |id| [id, EasySoundcloud.fetch_single_track(id, user)] }]
 
     # load tracks that aren't cached from the SC API
-    unloaded_ids = tracks.select { |id, track_info| track_info.nil? }.map { |id, track_info| id }
+    unloaded_ids = tracks.select { |_, track_info| track_info.nil? }.keys
     unloaded_tracks = EasySoundcloud.client_for(user).get("/tracks?ids=#{unloaded_ids.join(',')}")
     unloaded_tracks.each do |track|
       tracks[track['id']] = track
       Rails.cache.write(cache_key(track['id']), track)
     end
 
-    tracks.map { |id, track| track }
+    tracks.values
   end
 
   private

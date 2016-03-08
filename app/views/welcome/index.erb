@@ -1,7 +1,7 @@
 User id: <%= @user_id %><br/>
 
 <% if @logged_in %>
-    <%= react_component('Main', soundcloud_client_id: ENV['SOUNDCLOUD_CLIENT_ID'], tracks: @tracks) %>
+    <%= react_component('Main', soundcloud_client_id: ENV['SOUNDCLOUD_CLIENT_ID']) %>
 
     <%= link_to 'Logout', '/users/deauthenticate' %>
 <% else %>

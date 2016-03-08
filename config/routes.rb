@@ -12,5 +12,7 @@ Rails.application.routes.draw do
     get 'deauthenticate', on: :collection
   end
 
-  resources :scents
+  resources :scents do
+    get :possible_tracks, on: :collection
+  end
 end

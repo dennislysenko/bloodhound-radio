@@ -13,7 +13,7 @@ var Track = React.createClass({
 
     render() {
         return (
-            <div onClick={this.props.onUserPlayed}><img src={this.props.track.artwork_url} /> {this.props.track.title}</div>
+            <div onClick={() => this.props.onClick()}><img src={this.props.track.artwork_url} /> {this.props.track.title}</div>
         );
     }
 });

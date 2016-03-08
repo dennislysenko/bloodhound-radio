@@ -4,13 +4,18 @@ var TrackList = React.createClass({
     },
 
     render() {
-        let trackComponents = this.props.tracks.map(track => <Track track={track} onUserPlayed={this.props.onUserPlayed}/>);
+        let trackComponents = this.props.tracks.map(track => <Track track={track} onClick={() => this.props.onClick(track)}/>);
         return (
             <div>
-                <h1>Track list</h1>
                 {trackComponents}
             </div>
         )
+    }
+});
+
+var Scent = React.createClass({
+    render() {
+        return <div onClick={this.playScent(scent)}>{scent.name}</div>
     }
 });
 
@@ -19,14 +24,29 @@ var Main = React.createClass({
         return {
             mode: 'scents',
             audio: new Audio(),
-            queue: this.props.tracks,
+            queue: [],
+            likedTracks: [],
             currentTrack: null,
+            currentScent: null,
+            scents: [],
             paused: false
         };
     },
 
+    componentDidMount() {
+        this.serverRequests = [];
+
+        this.serverRequests.push($.get('/scents', result => this.setState({ scents: result.scents })));
+        this.serverRequests.push($.get('/scents/possible_tracks', result => this.setState({ likedTracks: result.tracks })));
+    },
+
+    componentWillUnmount() {
+        this.serverRequests.each(request => request.abort());
+        this.serverRequests = [];
+    },
+
     queue(tracks) {
-        this.state.queue = this.state.queue.concat(tracks);
+        this.state.queue = tracks;
     },
 
     playFirst() {
@@ -49,12 +69,43 @@ var Main = React.createClass({
         this.forceUpdate();
     },
 
+    playScent(scent) {
+        this.serverRequests.push($.get(`/scents/${scent.id}`, result => {
+            this.queue(result.scent.tracks);
+            this.playFirst();
+        }));
+    },
+
+    createScentFromTrack(track) {
+        $.post('/scents', { track_id: track.id }, result => {
+            if (result.scent) {
+                this.state.scents.push(result.scent);
+                this.forceUpdate();
+            } else {
+                alert(`Error: ${result}`);
+            }
+        })
+    },
+
     render() {
         if (this.state.mode == 'scents') {
+            // <TrackList tracks={this.props.tracks} onUserPlayed={this.playFirst}/>
+            let that = this;
+            let scents = this.state.scents.map(function(scent) {
+                let handler = function() {
+                    that.playScent(scent);
+                };
+
+                return <div key={scent.id} onClick={handler}>{scent.name}</div>
+            });
+
             return (
                 <div>
                     <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume} isPlaying={!this.state.paused} />
-                    <TrackList tracks={this.props.tracks} onUserPlayed={this.playFirst}/>
+                    {scents}
+
+                    <h3>Create some new scents from your likes:</h3>
+                    <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>
                 </div>
             )
         } else if (this.state.mode == 'scent') {
