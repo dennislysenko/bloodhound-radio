@@ -15,10 +15,35 @@ var Player = React.createClass({
                 button = <button onClick={this.props.onResume}>Resume</button>;
             }
 
+            let timer;
+            if (this.props.currentTime >= 0) {
+                let toReadableTime = (originalSeconds) => {
+
+                    let hours = Math.floor(originalSeconds / 3600);
+                    let leftover = originalSeconds - hours * 3600;
+                    let minutes = Math.floor(leftover / 60);
+                    let seconds = Math.floor(leftover % 60);
+
+                    let zeroify = (i) => i < 10 ? `0${i}` : `${i}`;
+
+                    if (hours > 0) {
+                        return `${zeroify(hours)}:${zeroify(minutes)}:${zeroify(seconds)}`
+                    } else {
+                        return `${zeroify(minutes)}:${zeroify(seconds)}`
+                    }
+                };
+
+                timer = <span>{toReadableTime(this.props.currentTime)} / {toReadableTime(this.props.currentTrack.duration / 1000)}</span>
+            }
+
             return (
                 <div id="player">
-                    Playing {this.props.currentTrack.title}
+                    Playing <strong>{this.props.currentTrack.title}</strong>
+                    {' '}
+                    {timer}
+                    {' '}
                     {button}
+                    <button onClick={this.props.onSkip}>Skip</button>
                 </div>
             );
         }

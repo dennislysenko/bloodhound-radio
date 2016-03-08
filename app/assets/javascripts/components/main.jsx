@@ -52,6 +52,9 @@ var Main = React.createClass({
         this.runServerRequest($.get, '/scents', null, result => this.setState({scents: result.scents}));
         this.runServerRequest($.get, '/scents/possible_tracks', null, result => this.setState({likedTracks: result.tracks}));
 
+        $(this.state.audio).on('ended', () => this.nextTrack());
+        this.playerUpdateInterval = setInterval(() => this.updatePlayer(), 100);
+
         //this.serverRequests.push($.get('/scents', result => this.setState({ scents: result.scents })));
         //this.serverRequests.push($.get('/scents/possible_tracks', result => this.setState({ likedTracks: result.tracks })));
     },
@@ -71,6 +74,10 @@ var Main = React.createClass({
         this.state.audio.src = this.state.currentTrack.stream_url + '?client_id=' + this.props.soundcloud_client_id;
         this.state.audio.play();
         this.forceUpdate();
+    },
+
+    nextTrack() {
+        this.playFirst();
     },
 
     pause() {
@@ -102,6 +109,10 @@ var Main = React.createClass({
                 alert(`Error: ${result}`);
             }
         });
+    },
+
+    updatePlayer() {
+        this.forceUpdate();
     },
 
     render() {
@@ -142,7 +153,8 @@ var Main = React.createClass({
         return (
             <div>
                 <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume}
-                        isPlaying={!this.state.paused}/>
+                        onSkip={this.nextTrack} isPlaying={!this.state.paused}
+                        currentTime={this.state.audio.currentTime} duration={this.state.audio.duration} />
 
                 {scentsSection}
 
