@@ -8,6 +8,11 @@ class UsersController < ApplicationController
 
     fields = Hash[simple_fields.map { |field| [field, field] }].merge(advanced_fields)
     attributes = Hash[fields.map { |db_field, sc_field| [db_field, sc_user_info[sc_field.to_s]] }]
+    attributes['soundcloud_token'] = auth_hash['credentials']['token']
+
+    unless auth_hash['credentials']['expires'].eql? false # strict equality check
+      render text: 'Looks like your access token expires. Please contact the administrator so he can build in appropriate code logic.'
+    end
 
     if @user.nil?
       @user = User.create(attributes)

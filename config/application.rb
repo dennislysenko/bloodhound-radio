@@ -22,5 +22,16 @@ module RiffRadio
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Begin things I added
+    config.autoload_paths << Rails.root.join('lib')
+
+    config.cache_store = :readthis_store, {
+        expires_in: 2.weeks.to_i,
+        namespace: 'cache',
+        redis: { URL: ENV.fetch('REDIS_URL'), driver: :hiredis }
+    }
+
+    Readthis.fault_tolerant = true
   end
 end

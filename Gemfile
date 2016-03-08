@@ -56,3 +56,9 @@ gem 'dotenv-rails'
 
 gem 'omniauth'
 gem 'omniauth-soundcloud'
+
+# caching
+gem 'readthis'
+gem 'hiredis'
+
+gem 'soundcloud'

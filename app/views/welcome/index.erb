@@ -3,6 +3,9 @@ User id: <%= @user_id %><br/>
 <% if @logged_in %>
     <%= react_component('Silly', thing: @current_user.full_name) %>
     <%= link_to 'Logout', '/users/deauthenticate' %>
+    <% @tracks.each do |track| %>
+        <%= react_component('Track', track: track, soundcloud_client_id: ENV['SOUNDCLOUD_CLIENT_ID']) %>
+    <% end %>
 <% else %>
     <%= link_to 'Login with Soundcloud', '/auth/soundcloud' %>
 <% end %>
