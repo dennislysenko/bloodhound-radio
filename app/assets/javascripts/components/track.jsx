@@ -4,14 +4,16 @@ var Track = React.createClass({
     },
 
     play() {
-        let audio = new Audio();
-        audio.src = this.props.track.stream_url + '?client_id=' + this.props.soundcloud_client_id;
-        audio.play();
+        //let audio = new Audio();
+        //audio.src = this.props.track.stream_url + '?client_id=' + this.props.soundcloud_client_id;
+        //audio.play();
+        this.props.player.queue([this.props.track]);
+        this.props.player.playFirst();
     },
 
     render() {
         return (
-            <div onClick={this.play}><img src={this.props.track.artwork_url} /> {this.props.track.title}</div>
+            <div onClick={this.props.onUserPlayed}><img src={this.props.track.artwork_url} /> {this.props.track.title}</div>
         );
     }
 });
