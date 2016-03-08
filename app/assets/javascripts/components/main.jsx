@@ -7,7 +7,7 @@ var TrackList = React.createClass({
         let trackComponents = this.props.tracks.map(track => <Track key={track.id} track={track}
                                                                     onClick={() => this.props.onClick(track)}/>);
         return (
-            <div>{trackComponents}</div>
+            <div className="card-deck">{trackComponents}</div>
         )
     }
 });

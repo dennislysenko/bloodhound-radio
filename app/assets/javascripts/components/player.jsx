@@ -5,7 +5,7 @@ var Player = React.createClass({
 
     render() {
         if (this.props.currentTrack == null) {
-            return <div id="player">Nothing currently playing</div>;
+            return <div id="player">Nothing currently playing; select a scent to follow</div>;
         } else {
             let button;
             if (this.props.isPlaying) {

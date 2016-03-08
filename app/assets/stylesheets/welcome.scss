@@ -6,6 +6,7 @@ body,html {
   background-color: #ffeedd;
   font-family: sans-serif;
   font-size: 14px;
+  margin: 0 0 100px;
 }
 
 .card-deck {
@@ -23,6 +24,7 @@ body,html {
   height: 200px;
   margin: 10px;
   box-sizing: border-box;
+  overflow: hidden;
   padding: 40px;
 
   background-color: #f7f0e1;
@@ -49,6 +51,8 @@ body,html {
 
   span {
     text-align: center;
+    display: block;
+    max-height: 80px;
   }
 }
 
@@ -65,5 +69,27 @@ body,html {
 
   h1 {
     text-align: center;
+  }
+}
+
+#player {
+  background-color: floralwhite;
+  border-top: 3px solid #444444;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+header {
+  text-align: center;
+  font-weight: bold;
+  font-size: 2em;
+  margin: 20px;
+
+  * {
+    vertical-align: middle;
+    display: inline-block;
   }
 }

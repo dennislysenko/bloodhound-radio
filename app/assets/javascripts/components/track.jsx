@@ -13,7 +13,7 @@ var Track = React.createClass({
 
     render() {
         return (
-            <div class="card" onClick={() => this.props.onClick()}>
+            <div className="card" onClick={() => this.props.onClick()}>
                 <img src={this.props.track.artwork_url} />
                 <span>{this.props.track.title}</span>
             </div>
