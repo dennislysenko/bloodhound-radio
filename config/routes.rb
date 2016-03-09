@@ -14,5 +14,7 @@ Rails.application.routes.draw do
 
   resources :scents do
     get :possible_tracks, on: :collection
+    post :seed, on: :member
+    post :update_cursor, on: :member
   end
 end

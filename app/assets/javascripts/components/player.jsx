@@ -43,6 +43,8 @@ var Player = React.createClass({
                     {timer}
                     {' '}
                     {button}
+                    <button onClick={this.props.onSeed}>Seed</button>
+                    <button onClick={this.props.onLike}>Like (on SoundCloud)</button>
                     <button onClick={this.props.onSkip}>Skip</button>
                 </div>
             );

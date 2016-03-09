@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308040329) do
+ActiveRecord::Schema.define(version: 20160308235839) do
 
   create_table "scents", force: :cascade do |t|
     t.string   "source_track_id"
     t.text     "track_ids"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.integer  "user_id"
     t.string   "name"
+    t.integer  "current_track_index"
+    t.float    "current_track_time"
   end
 
   add_index "scents", ["user_id"], name: "index_scents_on_user_id"

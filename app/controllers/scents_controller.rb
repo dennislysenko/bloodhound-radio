@@ -13,14 +13,7 @@ class ScentsController < ApplicationController
     track_id = track_id.to_s
 
     source_track = EasySoundcloud.fetch_single_track(track_id, current_user)
-
-    related_tracks = EasySoundcloud.client_for(current_user).get("/tracks/#{track_id}/related")
-    related_tracks.each do |track|
-      Rails.cache.write(track['id'], track)
-    end
-    related_tracks.select! do |track|
-      track['streamable'].eql? true
-    end
+    related_tracks = EasySoundcloud.related_tracks_for(track_id, current_user)
 
     scent = Scent.create(
         source_track_id: track_id,
@@ -43,5 +36,19 @@ class ScentsController < ApplicationController
     end
 
     render json: { tracks: tracks }
+  end
+
+  def seed
+    scent = Scent.find(params[:id])
+    tracks = EasySoundcloud.related_tracks_for(params[:track_id].to_i, current_user)
+    scent.blend_track_ids!(tracks.map { |track| track['id'] })
+  end
+
+  def update_cursor
+    scent = Scent.find(params[:id])
+
+    scent.update!(current_track_index: params[:current_track_index].to_i, current_track_time: params[:current_track_time].to_f)
+
+    render json: { success: true }
   end
 end

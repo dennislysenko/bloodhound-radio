@@ -4,8 +4,13 @@ var TrackList = React.createClass({
     },
 
     render() {
-        let trackComponents = this.props.tracks.map(track => <Track key={track.id} track={track}
-                                                                    onClick={() => this.props.onClick(track)}/>);
+        let trackComponents = this.props.tracks.map(track => {
+            if (this.props.compact) {
+                return <div key={track.id} onClick={() => this.props.onClick(track)}>{track.title}</div>;
+            } else {
+                return <Track key={track.id} track={track} onClick={() => this.props.onClick(track)}/>
+            }
+        });
         return (
             <div className="card-deck">{trackComponents}</div>
         )
@@ -53,6 +58,7 @@ var Main = React.createClass({
         this.runServerRequest($.get, '/scents/possible_tracks', null, result => this.setState({likedTracks: result.tracks}));
 
         $(this.state.audio).on('ended', () => this.nextTrack());
+        $(this.state.audio).on('canplay', () => this.updatePlayer());
         this.playerUpdateInterval = setInterval(() => this.updatePlayer(), 100);
 
         //this.serverRequests.push($.get('/scents', result => this.setState({ scents: result.scents })));
@@ -64,16 +70,20 @@ var Main = React.createClass({
         this.state.serverRequests = [];
     },
 
+    clearQueue() {
+        this.state.queue = [];
+        this.forceUpdate();
+    },
+
     queue(tracks) {
-        this.state.queue = tracks;
+        this.state.queue = tracks;// this.state.queue.concat(tracks);
+        this.forceUpdate();
     },
 
     playFirst() {
         this.state.currentTrack = this.state.queue.splice(0, 1)[0];
-
         this.state.audio.src = this.state.currentTrack.stream_url + '?client_id=' + this.props.soundcloud_client_id;
-        this.state.audio.play();
-        this.forceUpdate();
+        this.resume();
     },
 
     nextTrack() {
@@ -92,11 +102,14 @@ var Main = React.createClass({
         this.forceUpdate();
     },
 
-    playScent(scent) {
-        this.runServerRequest($.get, `/scents/${scent.id}`, null, result => {
-            this.state.currentScent = scent;
-            this.queue(result.scent.tracks);
+    playScent(sourceScent) {
+        this.runServerRequest($.get, `/scents/${sourceScent.id}`, null, result => {
+            this.state.currentScent = result.scent;
+            this.pause();
+            this.clearQueue();
+            this.queue(result.scent.tracks.slice(result.scent.current_track_index));
             this.playFirst();
+            this.state.audio.currentTime = result.scent.current_track_time;
         });
     },
 
@@ -111,7 +124,24 @@ var Main = React.createClass({
         });
     },
 
+    seedWithCurrentTrack(track) {
+        this.runServerRequest($.post, `/scents/${this.state.currentScent.id}/seed`, {track_id: track.id}, result => {
+            if (result.new_tracks) {
+                this.state.currentScent.tracks = this.state.currentScent.tracks.concat(result.new_tracks);
+                this.queue(result.new_tracks);
+            }
+        })
+    },
+
     updatePlayer() {
+        if (this.state.currentScent != null) {
+            let currentTrackIndex = this.state.currentScent.tracks.indexOf(this.state.currentTrack);
+            $.post(`/scents/${this.state.currentScent.id}/update_cursor`, {
+                current_track_index: currentTrackIndex,
+                current_track_time: this.state.audio.currentTime
+            });
+        }
+
         this.forceUpdate();
     },
 
@@ -150,18 +180,33 @@ var Main = React.createClass({
             </div>
         }
 
+        let mainDivClassName = "";
+        let scentTracklistSection;
+        if (this.state.currentScent != null) {
+            mainDivClassName = "left";
+            scentTracklistSection = <div className="right">
+                <h3>Tracks on "{this.state.currentScent.name}"</h3>
+                <TrackList tracks={this.state.currentScent.tracks} onClick={track => this.playTrackFromScent(track)} compact/>
+            </div>
+        }
+
         return (
             <div>
-                <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume}
-                        onSkip={this.nextTrack} isPlaying={!this.state.paused}
-                        currentTime={this.state.audio.currentTime} duration={this.state.audio.duration} />
+                <div className={mainDivClassName}>
+                    <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume}
+                            onSeed={this.seedWithCurrentTrack} onLike={this.likeCurrentTrack}
+                            onSkip={this.nextTrack} isPlaying={!this.state.paused}
+                            currentTime={this.state.audio.currentTime} duration={this.state.audio.duration}/>
 
-                {scentsSection}
+                    {scentsSection}
 
-                <h3>Give us a scent to track down from your likes:</h3>
-                <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>
+                    <h3>Give us a scent to track down from your likes:</h3>
+                    <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>
 
-                {loadingOverlay}
+                    {loadingOverlay}
+                </div>
+
+                {scentTracklistSection}
             </div>
         )
     }
