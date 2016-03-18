@@ -3,6 +3,12 @@ var Player = React.createClass({
         return {};
     },
 
+    openTrackPage() {
+        if (this.props.currentTrack != null) {
+            window.open(this.props.currentTrack.permalink_url);
+        }
+    },
+
     render() {
         if (this.props.currentTrack == null) {
             return <div id="player">Nothing currently playing; select a scent to follow</div>;
@@ -38,14 +44,20 @@ var Player = React.createClass({
 
             return (
                 <div id="player">
-                    Playing <strong>{this.props.currentTrack.title}</strong>
-                    {' '}
-                    {timer}
-                    {' '}
-                    {button}
-                    <button onClick={this.props.onSeed}>Seed</button>
-                    <button onClick={this.props.onLike}>Like (on SoundCloud)</button>
-                    <button onClick={this.props.onSkip}>Skip</button>
+                    <img src={this.props.currentTrack.artwork_url} />
+                    <div className="info">
+                        <br />
+                        Playing <strong>{this.props.currentTrack.title}</strong> uploaded by <strong>{this.props.currentTrack.user.username}</strong>
+                        <br />
+                        <br />
+                        {timer}
+                        {' '}
+                        {button}
+                        <button onClick={this.props.onSeed}>Seed</button>
+                        <button onClick={this.props.onLike}>Like (on SoundCloud)</button>
+                        <button onClick={this.props.onSkip}>Skip</button>
+                        <button onClick={this.openTrackPage}>Track Page</button>
+                    </div>
                 </div>
             );
         }
