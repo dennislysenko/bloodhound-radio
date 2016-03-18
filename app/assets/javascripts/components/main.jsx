@@ -6,7 +6,16 @@ var TrackList = React.createClass({
     render() {
         let trackComponents = this.props.tracks.map(track => {
             if (this.props.compact) {
-                return <div key={track.id} onClick={() => this.props.onClick(track)}>{track.title}</div>;
+                return <div key={track.id} className="compact-track" onClick={() => this.props.onClick(track)}>
+                    <img src={track.artwork_url} />
+                    <div class="info">
+                        <strong>{track.title}</strong>
+                        {' '}
+                        uploaded by
+                        {' '}
+                        <strong>{track.user.username}</strong>
+                    </div>
+                </div>;
             } else {
                 return <Track key={track.id} track={track} onClick={() => this.props.onClick(track)}/>
             }
