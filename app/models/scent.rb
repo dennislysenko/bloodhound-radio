@@ -24,16 +24,23 @@ class Scent < ActiveRecord::Base
     heard_track_ids = track_ids[0..current_track_index]
     unheard_track_ids = track_ids[current_track_index+1...track_ids.count]
 
+    p 'heard_track_ids', heard_track_ids, 'unheard_track_ids', unheard_track_ids, 'new_track_ids', new_track_ids
+
     # alternate tracks that were already queued with the tracks supplied to this method
     new_unheard_track_ids = []
     smaller_count = [unheard_track_ids.count, new_track_ids.count].min
+    p "popping off #{smaller_count} tracks (counts were #{unheard_track_ids.count}, #{new_track_ids.count})"
     (0...smaller_count).each do
-      new_unheard_track_ids << unheard_track_ids.delete(0)
-      new_unheard_track_ids << new_track_ids.delete(0)
+      new_unheard_track_ids << unheard_track_ids.delete_at(0)
+      new_unheard_track_ids << new_track_ids.delete_at(0)
+
+      p "just added ids to new unheard track ids: #{new_unheard_track_ids[-2..-1]}"
     end
 
     # one of these will be empty since we just popped everything off of it, but the other probably won't be (unless they had equal counts)
+    p 'concatting remaining unheard track_ids', unheard_track_ids
     new_unheard_track_ids.concat(unheard_track_ids)
+    p 'concatting remaining new track_ids', new_track_ids
     new_unheard_track_ids.concat(new_track_ids)
 
     update!(track_ids: heard_track_ids + new_unheard_track_ids)

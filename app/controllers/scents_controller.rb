@@ -61,6 +61,8 @@ class ScentsController < ApplicationController
     scent = Scent.find(params[:id])
     tracks = EasySoundcloud.related_tracks_for(params[:track_id].to_i, current_user)
     scent.blend_track_ids!(tracks.map { |track| track['id'] })
+
+    render json: { new_tracks: scent.tracks }
   end
 
   def update_cursor
