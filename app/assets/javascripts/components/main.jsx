@@ -68,6 +68,9 @@ var Main = React.createClass({
     componentWillUnmount() {
         this.state.serverRequests.each(request => request.abort());
         this.state.serverRequests = [];
+        if (this.playerUpdateInterval) {
+            clearInterval(this.playerUpdateInterval);
+        }
     },
 
     clearQueue() {
