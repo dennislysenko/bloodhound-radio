@@ -1,6 +1,7 @@
 class Scent < ActiveRecord::Base
   belongs_to :user
   serialize :track_ids, Array
+  serialize :seed_track_ids, Array
 
   def source_track
     EasySoundcloud.fetch_single_track(source_track_id, user)

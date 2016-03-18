@@ -61,8 +61,12 @@ class ScentsController < ApplicationController
 
   def seed
     scent = Scent.find(params[:id])
-    tracks = EasySoundcloud.related_tracks_for(params[:track_id].to_i, current_user)
-    scent.blend_track_ids!(tracks.map { |track| track['id'] })
+    track_id = params[:track_id].to_i
+    unless scent.seed_track_ids.include? track_id
+      scent.seed_track_ids << track_id
+      tracks = EasySoundcloud.related_tracks_for(track_id, current_user)
+      scent.blend_track_ids!(tracks.map { |track| track['id'] })
+    end
 
     render json: { new_tracks: scent.tracks }
   end
