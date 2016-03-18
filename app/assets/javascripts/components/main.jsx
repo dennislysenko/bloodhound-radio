@@ -34,7 +34,9 @@ var Main = React.createClass({
             currentScent: null,
             scents: [],
             paused: false,
-            serverRequests: []
+            serverRequests: [],
+            searchText: "",
+            searchResults: []
         };
     },
 
@@ -60,6 +62,7 @@ var Main = React.createClass({
         $(this.state.audio).on('ended', () => this.nextTrack());
         $(this.state.audio).on('canplay', () => this.updatePlayer());
         this.playerUpdateInterval = setInterval(() => this.updatePlayer(), 100);
+        this.serverUpdateInterval = setInterval(() => this.updateServer(), 5000);
 
         //this.serverRequests.push($.get('/scents', result => this.setState({ scents: result.scents })));
         //this.serverRequests.push($.get('/scents/possible_tracks', result => this.setState({ likedTracks: result.tracks })));
@@ -70,6 +73,9 @@ var Main = React.createClass({
         this.state.serverRequests = [];
         if (this.playerUpdateInterval) {
             clearInterval(this.playerUpdateInterval);
+        }
+        if (this.serverUpdateInterval) {
+            clearInterval(this.serverUpdateInterval);
         }
     },
 
@@ -137,6 +143,11 @@ var Main = React.createClass({
     },
 
     updatePlayer() {
+        // Right now just forces a re-render
+        this.forceUpdate();
+    },
+
+    updateServer() {
         if (this.state.currentScent != null) {
             let currentTrackIndex = this.state.currentScent.tracks.indexOf(this.state.currentTrack);
             $.post(`/scents/${this.state.currentScent.id}/update_cursor`, {
@@ -144,8 +155,15 @@ var Main = React.createClass({
                 current_track_time: this.state.audio.currentTime
             });
         }
+    },
 
-        this.forceUpdate();
+    changedSearchField(event) {
+        this.setState({searchText: event.target.value});
+        console.log(event.target.value);
+    },
+
+    search() {
+        this.runServerRequest($.post, '/scents/search', {query: this.state.searchText}, result => this.setState({searchResults: result.tracks}))
     },
 
     render() {
@@ -189,7 +207,8 @@ var Main = React.createClass({
             mainDivClassName = "left";
             scentTracklistSection = <div className="right">
                 <h3>Tracks on "{this.state.currentScent.name}"</h3>
-                <TrackList tracks={this.state.currentScent.tracks} onClick={track => this.playTrackFromScent(track)} compact/>
+                <TrackList tracks={this.state.currentScent.tracks} onClick={track => this.playTrackFromScent(track)}
+                           compact/>
             </div>
         }
 
@@ -202,6 +221,13 @@ var Main = React.createClass({
                             currentTime={this.state.audio.currentTime} duration={this.state.audio.duration}/>
 
                     {scentsSection}
+
+                    <h3>Search for a song:</h3>
+                    <div className="center">
+                        <input type="text" onChange={this.changedSearchField} placeholder="Type anything"/>
+                        <button onClick={this.search}>Search</button>
+                    </div>
+                    <TrackList tracks={this.state.searchResults} onClick={track => this.createScentFromTrack(track)}/>
 
                     <h3>Give us a scent to track down from your likes:</h3>
                     <TrackList tracks={this.state.likedTracks} onClick={track => this.createScentFromTrack(track)}/>

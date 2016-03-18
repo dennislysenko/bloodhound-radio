@@ -38,6 +38,13 @@ class ScentsController < ApplicationController
     render json: { tracks: tracks }
   end
 
+  def search
+    client = EasySoundcloud.client_for(current_user)
+    tracks = client.get("/tracks?q=#{Rack::Utils.escape params[:query]}").as_json
+
+    render json: { tracks: tracks }
+  end
+
   def seed
     scent = Scent.find(params[:id])
     tracks = EasySoundcloud.related_tracks_for(params[:track_id].to_i, current_user)

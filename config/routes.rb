@@ -16,5 +16,8 @@ Rails.application.routes.draw do
     get :possible_tracks, on: :collection
     post :seed, on: :member
     post :update_cursor, on: :member
+    post :search, on: :collection
   end
+
+  get 'scents/search/:query', to: 'scents#search'
 end
