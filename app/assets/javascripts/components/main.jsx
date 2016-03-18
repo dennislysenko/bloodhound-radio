@@ -5,9 +5,20 @@ var TrackList = React.createClass({
 
     render() {
         let trackComponents = this.props.tracks.map(track => {
+            let isCurrentTrack = this.props.currentTrack != null && this.props.currentTrack.id == track.id;
+
+            let currentTrackDisclaimer;
+            if (isCurrentTrack) {
+                currentTrackDisclaimer = <p><strong>NOW PLAYING</strong></p>;
+            }
+
+            let className = "compact-track";
+            if (isCurrentTrack) {
+                className += " current-track";
+            }
+
             if (this.props.compact) {
-                console.log(track[0]);
-                return <div key={track.id} className="compact-track" onClick={() => this.props.onClick(track)}>
+                return <div key={track.id} className={className} onClick={() => this.props.onClick(track)}>
                     <img src={track.artwork_url} />
                     <div className="info">
                         <strong>{track.title}</strong>
@@ -15,6 +26,7 @@ var TrackList = React.createClass({
                         uploaded by
                         {' '}
                         <strong>{track.user.username}</strong>
+                        {currentTrackDisclaimer}
                     </div>
                 </div>;
             } else {
@@ -71,6 +83,7 @@ var Main = React.createClass({
 
         $(this.state.audio).on('ended', () => this.nextTrack());
         $(this.state.audio).on('canplay', () => this.updatePlayer());
+        $(this.state.audio).on('error', () => this.nextTrack());
         this.playerUpdateInterval = setInterval(() => this.updatePlayer(), 100);
         this.serverUpdateInterval = setInterval(() => this.updateServer(), 5000);
 
@@ -132,10 +145,20 @@ var Main = React.createClass({
         });
     },
 
+    playTrackFromScent(track) {
+        if (this.state.currentScent != null) {
+            let trackInScent = this.state.currentScent.tracks.find((curTrack) => curTrack.id == track.id);
+            let indexInScent = this.state.currentScent.tracks.indexOf(trackInScent);
+            this.clearQueue();
+            this.queue(this.state.currentScent.tracks.slice(indexInScent));
+            this.playFirst();
+        }
+    },
+
     createScentFromTrack(track) {
         this.runServerRequest($.post, '/scents', {track_id: track.id}, result => {
             if (result.scent) {
-                this.state.scents.push(result.scent);
+                this.state.scents.unshift(result.scent);
                 this.forceUpdate();
             } else {
                 alert(`Error: ${result}`);
@@ -144,10 +167,17 @@ var Main = React.createClass({
     },
 
     seedWithCurrentTrack(track) {
+        let trackInScent = this.state.currentScent.tracks.find((curTrack) => curTrack.id == track.id);
+        let indexInScent = this.state.currentScent.tracks.indexOf(trackInScent);
+
         this.runServerRequest($.post, `/scents/${this.state.currentScent.id}/seed`, {track_id: track.id}, result => {
             if (result.new_tracks) {
-                this.state.currentScent.tracks = this.state.currentScent.tracks.concat(result.new_tracks);
-                this.queue(result.new_tracks);
+                this.state.currentScent.tracks = result.new_tracks;
+                this.clearQueue();
+                this.queue(this.state.currentScent.tracks.slice(indexInScent));
+                this.forceUpdate();
+
+                console.log(this.state.currentScent.tracks.map(track => track.id));
             }
         })
     },
@@ -175,7 +205,6 @@ var Main = React.createClass({
 
     changedSearchField(event) {
         this.setState({searchText: event.target.value});
-        console.log(event.target.value);
     },
 
     search() {
@@ -224,7 +253,7 @@ var Main = React.createClass({
             scentTracklistSection = <div className="right">
                 <h3>Tracks on "{this.state.currentScent.name}"</h3>
                 <TrackList tracks={this.state.currentScent.tracks} onClick={track => this.playTrackFromScent(track)}
-                           compact/>
+                           currentTrack={this.state.currentTrack} compact/>
             </div>
         }
 

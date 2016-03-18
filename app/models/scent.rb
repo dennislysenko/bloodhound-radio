@@ -11,10 +11,12 @@ class Scent < ActiveRecord::Base
 
     # load tracks that aren't cached from the SC API
     unloaded_ids = tracks.select { |_, track_info| track_info.nil? }.keys
-    unloaded_tracks = EasySoundcloud.client_for(user).get("/tracks?ids=#{unloaded_ids.join(',')}")
-    unloaded_tracks.each do |track|
-      tracks[track['id']] = track
-      Rails.cache.write(cache_key(track['id']), track)
+    unless unloaded_ids.empty?
+      unloaded_tracks = EasySoundcloud.client_for(user).get("/tracks?ids=#{unloaded_ids.join(',')}")
+      unloaded_tracks.each do |track|
+        tracks[track['id']] = track
+        Rails.cache.write(cache_key(track['id']), track)
+      end
     end
 
     tracks.values
@@ -43,7 +45,11 @@ class Scent < ActiveRecord::Base
     p 'concatting remaining new track_ids', new_track_ids
     new_unheard_track_ids.concat(new_track_ids)
 
-    update!(track_ids: heard_track_ids + new_unheard_track_ids)
+    all_ids = heard_track_ids + new_unheard_track_ids
+    update!(track_ids: all_ids.uniq)
+
+    p track_ids
+    nil
   end
 
   private

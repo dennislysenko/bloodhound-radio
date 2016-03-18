@@ -3,7 +3,7 @@ class ScentsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    scents = current_user.scents.map { |scent| ScentSerializer.new(scent, root: false, only: [:name, :id, :source_track]).as_json }
+    scents = current_user.scents.order(created_at: :desc).map { |scent| ScentSerializer.new(scent, root: false, only: [:name, :id, :source_track]).as_json }
     render json: { scents: scents }
   end
 
@@ -13,7 +13,9 @@ class ScentsController < ApplicationController
     track_id = track_id.to_s
 
     source_track = EasySoundcloud.fetch_single_track(track_id, current_user)
-    related_tracks = EasySoundcloud.related_tracks_for(track_id, current_user)
+    related_tracks = EasySoundcloud.related_tracks_for(track_id, current_user)[0..3]
+
+    p related_tracks
 
     scent = Scent.create(
         source_track_id: track_id,

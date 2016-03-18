@@ -102,7 +102,12 @@ body,html {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 8px;
+
+  cursor: pointer;
 
   margin-bottom: 12px;
 
@@ -114,6 +119,16 @@ body,html {
   }
 
   div.info {
+  }
+
+  &:hover {
+    box-shadow: 0 0 10px #4e4f50;
+    border-color: #999999;
+  }
+
+  &.current-track {
+    background-color: #ffffff;
+    border: 2px solid #585858;
   }
 }
 

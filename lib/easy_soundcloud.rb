@@ -15,7 +15,7 @@ class EasySoundcloud
 
   def self.related_tracks_for(track_id, user)
     Rails.cache.fetch("#{EasySoundcloud.cache_key(track_id)}:related") do
-      related_tracks = EasySoundcloud.client_for(user).get("/tracks/#{track_id}/related")
+      related_tracks = EasySoundcloud.client_for(user).get("/tracks/#{track_id}/related")[0..3]
       related_tracks.each do |track|
         Rails.cache.write(EasySoundcloud.cache_key(track['id']), track)
       end
