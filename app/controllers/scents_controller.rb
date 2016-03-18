@@ -13,7 +13,7 @@ class ScentsController < ApplicationController
     track_id = track_id.to_s
 
     source_track = EasySoundcloud.fetch_single_track(track_id, current_user)
-    related_tracks = EasySoundcloud.related_tracks_for(track_id, current_user)[0..3]
+    related_tracks = EasySoundcloud.related_tracks_for(track_id, current_user)
 
     p related_tracks
 
