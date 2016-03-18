@@ -142,6 +142,12 @@ var Main = React.createClass({
         })
     },
 
+    likeCurrentTrack(track) {
+        this.runServerRequest($.post, `/scents/like_track`, {track_id: track.id}, result => {
+            this.setState({likedTracks: result.liked_tracks});
+        })
+    },
+
     updatePlayer() {
         // Right now just forces a re-render
         this.forceUpdate();
@@ -216,7 +222,7 @@ var Main = React.createClass({
             <div>
                 <div className={mainDivClassName}>
                     <Player currentTrack={this.state.currentTrack} onPause={this.pause} onResume={this.resume}
-                            onSeed={this.seedWithCurrentTrack} onLike={this.likeCurrentTrack}
+                            onSeed={this.seedWithCurrentTrack} onLike={track => this.likeCurrentTrack(track)}
                             onSkip={this.nextTrack} isPlaying={!this.state.paused}
                             currentTime={this.state.audio.currentTime} duration={this.state.audio.duration}/>
 

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post :seed, on: :member
     post :update_cursor, on: :member
     post :search, on: :collection
+    post :like_track, on: :collection
   end
 
   get 'scents/search/:query', to: 'scents#search'

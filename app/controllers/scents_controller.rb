@@ -38,6 +38,18 @@ class ScentsController < ApplicationController
     render json: { tracks: tracks }
   end
 
+  def like_track
+    track_id = params[:track_id].to_i
+
+    client = EasySoundcloud.client_for(current_user)
+    client.put("/me/favorites/#{track_id}")
+
+    tracks = client.get('/me/favorites').as_json
+    Rails.cache.write("sc/user/likes/#{current_user.id}", tracks)
+
+    render json: { liked_tracks: tracks }
+  end
+
   def search
     client = EasySoundcloud.client_for(current_user)
     tracks = client.get("/tracks?q=#{Rack::Utils.escape params[:query]}").as_json

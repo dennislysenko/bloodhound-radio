@@ -53,8 +53,8 @@ var Player = React.createClass({
                         {timer}
                         {' '}
                         {button}
-                        <button onClick={this.props.onSeed}>Seed</button>
-                        <button onClick={this.props.onLike}>Like (on SoundCloud)</button>
+                        <button onClick={() => this.props.onSeed(this.props.currentTrack)}>Seed</button>
+                        <button onClick={() => this.props.onLike(this.props.currentTrack)}>Like (on SoundCloud)</button>
                         <button onClick={this.props.onSkip}>Skip</button>
                         <button onClick={this.openTrackPage}>Track Page</button>
                     </div>
