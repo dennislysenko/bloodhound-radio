@@ -5,6 +5,9 @@ class Scent < ActiveRecord::Base
 
   def source_track
     EasySoundcloud.fetch_single_track(source_track_id, user)
+  rescue => e
+    puts "error #{e}"
+    nil
   end
 
   def tracks
