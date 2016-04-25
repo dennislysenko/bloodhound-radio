@@ -214,7 +214,7 @@ var Main = React.createClass({
     render() {
         // <TrackList tracks={this.props.tracks} onUserPlayed={this.playFirst}/>
         let that = this;
-        let scents = this.state.scents.map(function (scent) {
+        let scents = this.state.scents.filter(scent => scent.source_track != null).map(function (scent) {
             let handler = function () {
                 that.playScent(scent);
             };
