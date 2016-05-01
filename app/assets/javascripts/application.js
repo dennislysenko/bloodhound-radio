@@ -17,3 +17,7 @@
 //= require react_ujs
 //= require components
 //= require_tree .
+
+// This line pulls the main component and allows us to render it in HTML
+// to kick off the rest of the react component pipeline.
+window.Main = require('./components/main.jsx');

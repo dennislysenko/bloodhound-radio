@@ -27,6 +27,9 @@ module SCRadio
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('serializers')
 
+    config.browserify_rails.source_map_environments << 'development'
+    config.browserify_rails.commandline_options = '-t [reactify --everything ] -t [ babelify --presets [ es2015 ] --extensions .jsx .js ]'
+
     config.cache_store = :readthis_store, {
         expires_in: 2.weeks.to_i,
         namespace: 'cache',
