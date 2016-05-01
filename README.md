@@ -3,7 +3,7 @@
 
 **The fun part**: while listening to a station, you can press 'seed' on any track, and it'll blend in some related tracks into the list of tracks you have yet to hear. It's really fun--try it out.
 
-Currently accessible [here on Heroku](screc.herokuapp.com); expect it to move if I start developing this project more seriously.
+Currently accessible [here on Heroku](http://screc.herokuapp.com); expect it to move if I start developing this project more seriously.
 
 # stack
 Written in Rails and React using the fantastic [reactjs/react-rails](https://github.com/reactjs/react-rails) gem. 
