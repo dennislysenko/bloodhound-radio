@@ -1,0 +1,26 @@
+{
+  "name": "bloodhound-radio",
+  "version": "1.0.0",
+  "description": "\"Pandora for Soundcloud\": lets you create radio stations + playlists using Soundcloud's wonderful 'related tracks' algorithm. Stations are called 'scents' and you can create one from any of your liked tracks easily, or search for a track to create a scent from.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dennislysenko/bloodhound-radio.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dennislysenko/bloodhound-radio/issues"
+  },
+  "homepage": "https://github.com/dennislysenko/bloodhound-radio#readme",
+  "dependencies": {
+    "browserify": "^13.0.0",
+    "browserify-incremental": "^3.1.1"
+  }
+}

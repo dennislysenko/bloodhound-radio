@@ -1,3 +1,5 @@
+var add = require('./add');
+
 var TrackList = React.createClass({
     getInitialState() {
         return {};
@@ -257,6 +259,8 @@ var Main = React.createClass({
             </div>
         }
 
+        let result = add(1, 2);
+
         return (
             <div>
                 <div className={mainDivClassName}>
@@ -267,7 +271,7 @@ var Main = React.createClass({
 
                     {scentsSection}
 
-                    <h3>Search for a song:</h3>
+                    <h3>Search for a song {result}:</h3>
                     <div className="center">
                         <input type="text" onChange={this.changedSearchField} placeholder="Type anything"/>
                         <button onClick={this.search}>Search</button>
